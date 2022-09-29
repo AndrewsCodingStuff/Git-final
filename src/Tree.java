@@ -8,9 +8,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class Tree {
+	String nameOfFile = "";
 	
 	public Tree (ArrayList <String> strList) throws IOException, NoSuchAlgorithmException
 	{
+		System.out.println("tree created");
 		String str = "";
 		int count = 0;
 		for (String g : strList) {
@@ -41,9 +43,23 @@ public class Tree {
 
         // return the HashText
         BufferedWriter writer = new BufferedWriter(new FileWriter("test/objects/" + hashtext + ".txt"));
+       String fileName =  "test/objects/" + hashtext + ".txt";
+       nameOfFile = fileName;
+       
         writer.write(str);
         writer.close();
     }
+	
+
+	public String getTreeName() {
+		return nameOfFile;
+	}
+	
+	
+	
+	//extended part, we need to delete files or
+	//when u delete the original commit still has the tree that points to deleted folder. The new commit will have the tree that only points to the non deleted blobs not the tree. 
+	//u go into the tree, then check if any of the blobs are the deleted file then if it isn't then you go into the next tree and go into that and you keep looking
 	
 	public static void main (String[]args) throws NoSuchAlgorithmException, IOException {
 		ArrayList<String> t = new ArrayList<String>();
@@ -53,6 +69,7 @@ public class Tree {
 		t.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
 		t.add("tree : e7d79898d3342fd15daf6ec36f4cb095b52fd976");
 		Tree ne = new Tree(t);
+		
 	}
 }
 

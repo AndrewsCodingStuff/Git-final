@@ -16,6 +16,7 @@ public class Index {
 		inx.remove("foo.txt");
 	}
 	
+	
 	public Index() {
 		map = new HashMap<String, String>();
 	}

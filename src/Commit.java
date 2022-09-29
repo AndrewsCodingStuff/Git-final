@@ -3,11 +3,11 @@ import java.util.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 public class Commit {
 
-	private static String pTree;
 	private static String parent;
 	private static String other;
 	private static String summary;
@@ -15,12 +15,13 @@ public class Commit {
 	private static String date;
 	private static String fileName;
 	
-	public static void main (String[]args) throws IOException{
-		
+	public static void main (String[]args) throws IOException, NoSuchAlgorithmException{
+		Commit the = new Commit("Fix", "Andrew", null);
+		the.makeTree();
+		//System.out.println("went through");
 	}
 	
-	public Commit(String pt, String s, String a, String pointer) throws FileNotFoundException {
-		pTree = pt;
+	public Commit(String s, String a, String pointer) throws FileNotFoundException {
 		summary = s;
 		author = a;
 		date = getDate();
@@ -51,6 +52,43 @@ public class Commit {
 			pw.close();
 		}
 	}
+	
+	public String nameOfCommit() {
+		return fileName;
+	
+	}
+	
+	public void makeTree() throws IOException, NoSuchAlgorithmException {
+		ArrayList<String> indexContents = new ArrayList<String>();
+		BufferedReader br = new BufferedReader(new FileReader("index.txt"));
+		ArrayList<String> treeContents = new ArrayList<String>();
+	while(br.ready()) {
+		indexContents.add(br.readLine());
+	}
+	for(int i = 0; i<indexContents.size(); i++) {
+		String toFix = indexContents.get(i);
+		System.out.println(toFix);
+		for(int a = 0; a<toFix.length(); a++) {
+			System.out.println(toFix.charAt(a));
+			
+		if(toFix.charAt(a) == ':') {
+		String newStr = toFix.substring(0,a);
+		treeContents.add(newStr);
+		
+			
+		}
+		
+		}
+		
+	}
+	br.close();
+	
+	Tree ofCommit = new Tree(treeContents);
+	
+
+	}
+		
+	
 	
 	private String getSHA1(String str){
 		String value = str;
@@ -105,7 +143,4 @@ public class Commit {
 		parent = par.getCommitName();
 	}
 	
-	public String getpTree() {
-		return pTree;
-	}
 }

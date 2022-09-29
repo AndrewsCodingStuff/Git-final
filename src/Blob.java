@@ -11,9 +11,11 @@ public class Blob {
 	private String contents;
 	private String zipped;
 	private String hashedZip;
+	private String original;
 	
 	public static void main (String[]args) throws IOException{
 		Blob bob = new Blob("test/something.txt");
+		
 	}
 	
 	public Blob(String fileName) throws IOException {
@@ -34,7 +36,12 @@ public class Blob {
 		hashed = getSHA1(contents);
 		zipped = zippedContents();
 		hashedZip = getSHA1(zipped);
+		original = fileName;
 		createFile();
+	}
+	
+	public String getOriginalFile() {
+		return original;
 	}
 	
 	private String getSHA1 (String s1){
@@ -81,4 +88,7 @@ public class Blob {
 	public String getHashed() {
 		return hashedZip;
 	}
+	
+	
+	
 }
