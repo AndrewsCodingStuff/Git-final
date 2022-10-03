@@ -14,10 +14,18 @@ public class Commit {
 	private static String author;
 	private static String date;
 	private static String fileName;
+	private static String nameOfTree;
 	
 	public static void main (String[]args) throws IOException, NoSuchAlgorithmException{
-		Commit the = new Commit("Fix", "Andrew", null);
-		the.makeTree();
+		Index inx = new Index();
+		inx.init();
+		inx.add("foo.txt");
+		inx.add("bar.txt");
+		Commit parent = new Commit("The Test", "Andrew G", null);
+		parent.makeTree();
+		inx.add("something.txt");
+		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
+		com1.makeTree();
 		//System.out.println("went through");
 	}
 	
@@ -29,7 +37,7 @@ public class Commit {
 			parent = pointer;
 		else
 			parent = null;
-		other = null;
+			other = null;
 		
 		String contents = summary + date + author + parent;
 		fileName = getSHA1(contents);
@@ -40,10 +48,17 @@ public class Commit {
 			Scanner input = new Scanner(new File("test/objects/" + parent));
 			String pContents = "";
 			pContents += input.nextLine() + "\n";
+			System.out.println(pContents);
 			pContents += input.nextLine() + "\n";
+			System.out.println(pContents);
+
 			pContents += fileName + "\n";
+			System.out.println(pContents);
+
 			input.nextLine();
 			pContents += input.nextLine() + "\n";
+			System.out.println(pContents);
+
 			pContents += input.nextLine() + "\n";
 			pContents += input.nextLine() + "\n";
 			
@@ -53,28 +68,28 @@ public class Commit {
 		}
 	}
 	
-	public String nameOfCommit() {
-		return fileName;
-	
-	}
-	
 	public void makeTree() throws IOException, NoSuchAlgorithmException {
 		ArrayList<String> indexContents = new ArrayList<String>();
-		BufferedReader br = new BufferedReader(new FileReader("index.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("test/index.txt"));
 		ArrayList<String> treeContents = new ArrayList<String>();
+		
 	while(br.ready()) {
 		indexContents.add(br.readLine());
 	}
 	for(int i = 0; i<indexContents.size(); i++) {
 		String toFix = indexContents.get(i);
-		System.out.println(toFix);
+		//System.out.println(toFix);
 		for(int a = 0; a<toFix.length(); a++) {
-			System.out.println(toFix.charAt(a));
+			//System.out.println(toFix.charAt(a));
 			
 		if(toFix.charAt(a) == ':') {
-		String newStr = toFix.substring(0,a);
+		String newStr = toFix.substring(a);
+		newStr = "blob: " + newStr;
 		treeContents.add(newStr);
-		
+		PrintWriter writer = new PrintWriter("test/index.txt");
+		writer.flush();
+		writer.close();
+		 
 			
 		}
 		
@@ -83,8 +98,14 @@ public class Commit {
 	}
 	br.close();
 	
+	if(parent!= null) {
+		treeContents.add("tree: " + readFirstLine(parent));
+		
+	}
 	Tree ofCommit = new Tree(treeContents);
-	
+	nameOfTree = ofCommit.getTreeName();
+	//File deleteIndexFile = new FIle("index.txt");
+
 
 	}
 		
@@ -123,6 +144,13 @@ public class Commit {
 		pw.close();
 	}
 	
+	public String readFirstLine(String fileName) throws IOException {
+		String str = "";
+		BufferedReader read = new BufferedReader(new FileReader(fileName));
+		str = read.readLine();
+		return str;
+	}
+	
 	public String getCommitName() {
 		return fileName;
 	}
@@ -141,6 +169,11 @@ public class Commit {
 	
 	public void setParent(Commit par) {
 		parent = par.getCommitName();
+	}
+	
+	public String getTree() {
+		
+	return nameOfTree;
 	}
 	
 }

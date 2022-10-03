@@ -12,7 +12,7 @@ public class Tree {
 	
 	public Tree (ArrayList <String> strList) throws IOException, NoSuchAlgorithmException
 	{
-		System.out.println("tree created");
+		//System.out.println("tree created");
 		String str = "";
 		int count = 0;
 		for (String g : strList) {
