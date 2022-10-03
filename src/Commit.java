@@ -21,11 +21,12 @@ public class Commit {
 		inx.init();
 		inx.add("foo.txt");
 		inx.add("bar.txt");
-		Commit parent = new Commit("The Test", "Andrew G", null);
-		parent.makeTree();
-		inx.add("something.txt");
-		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
-		com1.makeTree();
+		
+		//Commit parent = new Commit("The Test", "Andrew G", null);
+		//parent.makeTree();
+		//inx.add("something.txt");
+		//Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
+		//com1.makeTree();
 		//System.out.println("went through");
 	}
 	
@@ -47,7 +48,10 @@ public class Commit {
 		if (parent != null) {
 			Scanner input = new Scanner(new File("test/objects/" + parent));
 			String pContents = "";
-			pContents += input.nextLine() + "\n";
+			if(input.hasNextLine()) {
+				pContents += input.nextLine() + "\n";
+			}
+			/*pContents += input.nextLine() + "\n";
 			System.out.println(pContents);
 			pContents += input.nextLine() + "\n";
 			System.out.println(pContents);
@@ -60,7 +64,7 @@ public class Commit {
 			System.out.println(pContents);
 
 			pContents += input.nextLine() + "\n";
-			pContents += input.nextLine() + "\n";
+			pContents += input.nextLine() + "\n";*/
 			
 			PrintWriter pw = new PrintWriter("test/objects/" + parent);
 			pw.append(pContents);
