@@ -22,15 +22,16 @@ public class Commit {
 		inx.add("foo.txt");
 		inx.add("bar.txt");
 		
-		//Commit parent = new Commit("The Test", "Andrew G", null);
+		Commit parent = new Commit("The Test", "Andrew G", null);
 		//parent.makeTree();
-		//inx.add("something.txt");
-		//Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
+		//parent.makeTree();
+		inx.add("something.txt");
+		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
 		//com1.makeTree();
 		//System.out.println("went through");
 	}
 	
-	public Commit(String s, String a, String pointer) throws FileNotFoundException {
+	public Commit(String s, String a, String pointer) throws NoSuchAlgorithmException, IOException {
 		summary = s;
 		author = a;
 		date = getDate();
@@ -40,31 +41,31 @@ public class Commit {
 			parent = null;
 			other = null;
 		
-		String contents = summary + date + author + parent;
+		String contents = summary + date + author + parent + nameOfTree + other;
 		fileName = getSHA1(contents);
-		
+		makeTree();
 		writeFile();
 		
 		if (parent != null) {
 			Scanner input = new Scanner(new File("test/objects/" + parent));
 			String pContents = "";
-			if(input.hasNextLine()) {
+			/*if(input.hasNextLine()) {
 				pContents += input.nextLine() + "\n";
-			}
-			/*pContents += input.nextLine() + "\n";
-			System.out.println(pContents);
+			}*/
 			pContents += input.nextLine() + "\n";
-			System.out.println(pContents);
+			//System.out.println(pContents);
+			pContents += input.nextLine() + "\n";
+			//System.out.println(pContents);
 
 			pContents += fileName + "\n";
-			System.out.println(pContents);
+			//System.out.println(pContents);
 
 			input.nextLine();
 			pContents += input.nextLine() + "\n";
 			System.out.println(pContents);
 
 			pContents += input.nextLine() + "\n";
-			pContents += input.nextLine() + "\n";*/
+			pContents += input.nextLine() + "\n";
 			
 			PrintWriter pw = new PrintWriter("test/objects/" + parent);
 			pw.append(pContents);
@@ -103,6 +104,7 @@ public class Commit {
 	br.close();
 	
 	if(parent!= null) {
+		System.out.println(parent);
 		treeContents.add("tree: " + readFirstLine(parent));
 		
 	}
@@ -137,11 +139,15 @@ public class Commit {
 	
 	public void writeFile() throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter("test/objects/" + new File(fileName));
-		pw.append(fileName + "\n");
+		pw.append(getTree() + "\n");
 		if (parent != null)
 			pw.append(parent + "\n");
+		else
+			pw.append("\n");
 		if (other != null)
 			pw.append(other + "\n");
+		else
+			pw.append("\n");
 		pw.append(author + "\n");
 		pw.append(date + "\n");
 		pw.append(summary + "\n");
@@ -150,7 +156,7 @@ public class Commit {
 	
 	public String readFirstLine(String fileName) throws IOException {
 		String str = "";
-		BufferedReader read = new BufferedReader(new FileReader(fileName));
+		BufferedReader read = new BufferedReader(new FileReader("test/objects/" + fileName));
 		str = read.readLine();
 		return str;
 	}
