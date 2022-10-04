@@ -24,6 +24,7 @@ public class Index {
 	public void init() throws FileNotFoundException {
 		File f = new File("test/index.txt");
 		new File("test/objects").mkdirs();
+		new File("Head");
 	}
 	
 	public void add(String fileName) throws IOException {

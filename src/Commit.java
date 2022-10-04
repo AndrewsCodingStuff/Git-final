@@ -15,27 +15,35 @@ public class Commit {
 	private static String date;
 	private static String fileName;
 	private static String nameOfTree;
+	private ArrayList<String> tc = new ArrayList<String>();
+	private ArrayList<String> forDelete = new ArrayList<String>();
+	private String Head;
+
 	
 	public static void main (String[]args) throws IOException, NoSuchAlgorithmException{
+		
 		Index inx = new Index();
 		inx.init();
 		inx.add("foo.txt");
 		inx.add("bar.txt");
 		
 		Commit parent = new Commit("The Test", "Andrew G", null);
-		//parent.makeTree();
-		//parent.makeTree();
+		//System.out.println(parent.readLastLine(parent.getTree()));
 		inx.add("something.txt");
 		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
 		inx.add("foobar.txt");
 		Commit com2 = new Commit("Third commit", "Andy", com1.getCommitName());
 		inx.add("tester.txt");
 		Commit com3 = new Commit("4th commit", "And", com2.getCommitName());
+		com3.deleteFile(com3.getTree(), "foo.txt");  
 		//com1.makeTree();
 		//System.out.println("went through");
 	}
 	
 	public Commit(String s, String a, String pointer) throws NoSuchAlgorithmException, IOException {
+		
+		
+	
 		summary = s;
 		author = a;
 		date = getDate();
@@ -47,8 +55,14 @@ public class Commit {
 		
 		String contents = summary + date + author + parent + nameOfTree + other;
 		fileName = getSHA1(contents);
+		Head = fileName;
+		//PrintWriter headwrite = new PrintWriter("test/" + "Head");
 		makeTree();
 		writeFile();
+		PrintWriter write = new PrintWriter("Head");
+		write.flush();
+		write.println(Head);
+		write.close();
 		
 		if (parent != null) {
 			Scanner input = new Scanner(new File("test/objects/" + parent));
@@ -66,7 +80,7 @@ public class Commit {
 
 			input.nextLine();
 			pContents += input.nextLine() + "\n";
-			System.out.println(pContents);
+			//System.out.println(pContents);
 
 			pContents += input.nextLine() + "\n";
 			pContents += input.nextLine() + "\n";
@@ -76,6 +90,7 @@ public class Commit {
 			pw.close();
 		}
 	}
+	
 	
 	public void makeTree() throws IOException, NoSuchAlgorithmException {
 		ArrayList<String> indexContents = new ArrayList<String>();
@@ -115,10 +130,11 @@ public class Commit {
 	Tree ofCommit = new Tree(treeContents);
 	nameOfTree = ofCommit.getTreeName();
 	//File deleteIndexFile = new FIle("index.txt");
-
+	tc = treeContents;
 
 	}
 		
+	
 	
 	//Look for the file by checking each tree, then 
 	private String getSHA1(String str){
@@ -142,8 +158,10 @@ public class Commit {
 	}
 	
 	public void writeFile() throws FileNotFoundException {
+		
 		PrintWriter pw = new PrintWriter("test/objects/" + new File(fileName));
 		pw.append(getTree() + "\n");
+		
 		if (parent != null)
 			pw.append(parent + "\n");
 		else
@@ -152,17 +170,69 @@ public class Commit {
 			pw.append(other + "\n");
 		else
 			pw.append("\n");
+		
 		pw.append(author + "\n");
 		pw.append(date + "\n");
 		pw.append(summary + "\n");
 		pw.close();
 	}
+	//the recursive call is the tree before.
+	public void deleteFile(String theTree, String deleteFile) throws IOException {
+		//String treeToRead = getTree();
+		String findFile = "Blob: " + getSHA1(deleteFile);
+		Boolean check = false;
+		System.out.println(theTree);
+		String last = readLastLine(theTree);
+		BufferedReader reader = new BufferedReader(new FileReader("test/objects/" + theTree));
+		while(reader.ready()) {
+			String str = reader.readLine();
+			if(str.equals(last)) {
+				deleteFile(last,deleteFile);
+			}
+		forDelete.add(str);
+		if(str.equals(findFile)) {
+			check = true;
+			
+			return;
+			//return check;
+			
+		}
+		
+		}
+	
+		
+	}
+	
+	public void editFile(String editFile) {
+		//deleteFile(getTree,)
+	}
+	
+	
+	// once u find the tree that has the bad file then u get all the blobs before it and add it to the tree
+	// u also add the tree after the bad tree which.
+	//for edit u delete that one and add a blob.
+	
+	
+		
+	
 	
 	public String readFirstLine(String fileName) throws IOException {
 		String str = "";
+	
 		BufferedReader read = new BufferedReader(new FileReader("test/objects/" + fileName));
 		str = read.readLine();
 		return str;
+	}
+	
+	public String readLastLine(String fileName) throws IOException {
+		String str = "";
+		BufferedReader read = new BufferedReader(new FileReader("test/objects/" + fileName));
+		while(read.ready()) {
+			str = read.readLine();
+		}
+		read.readLine();
+		return str;
+	
 	}
 	
 	public String getCommitName() {
@@ -187,7 +257,16 @@ public class Commit {
 	
 	public String getTree() {
 		
-	return nameOfTree;
+	return nameOfTree.substring(13);
 	}
+	
+	public String getHead() {
+		return Head;
+		
+	}
+	
+	
+	
+
 	
 }
