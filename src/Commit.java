@@ -26,16 +26,15 @@ public class Commit {
 		inx.init();
 		inx.add("foo.txt");
 		inx.add("bar.txt");
-		
 		Commit parent = new Commit("The Test", "Andrew G", null);
-		//System.out.println(parent.readLastLine(parent.getTree()));
 		inx.add("something.txt");
 		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
 		inx.add("foobar.txt");
 		Commit com2 = new Commit("Third commit", "Andy", com1.getCommitName());
 		inx.add("tester.txt");
 		Commit com3 = new Commit("4th commit", "And", com2.getCommitName());
-		com3.deleteFile(com3.getTree(), "foo.txt");  
+		assertTrue()
+		//com3.deleteFile(com3.getTree(), "foo.txt");  
 		//com1.makeTree();
 		//System.out.println("went through");
 	}
