@@ -27,6 +27,10 @@ public class Commit {
 		//parent.makeTree();
 		inx.add("something.txt");
 		Commit com1 = new Commit("B Test", "Andrew", parent.getCommitName());
+		inx.add("foobar.txt");
+		Commit com2 = new Commit("Third commit", "Andy", com1.getCommitName());
+		inx.add("tester.txt");
+		Commit com3 = new Commit("4th commit", "And", com2.getCommitName());
 		//com1.makeTree();
 		//System.out.println("went through");
 	}
@@ -116,7 +120,7 @@ public class Commit {
 	}
 		
 	
-	
+	//Look for the file by checking each tree, then 
 	private String getSHA1(String str){
 		String value = str;
 		String output = "";
